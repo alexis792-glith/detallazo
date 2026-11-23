@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para ti ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f8e8ee 50%, #f3d5e0 100%);
+      --card-bg: rgba(255, 255, 255, 0.78);
+      --primary: #c94b76;
+      --primary-hover: #a8385e;
+      --text-main: #3b2830;
+      --text-muted: #7a5c68;
+      --border-soft: rgba(201, 75, 118, 0.18);
+      --shadow: 0 10px 30px rgba(168, 56, 94, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Detalles flotantes suaves en el fondo */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: -1;
+      opacity: 0.55;
+    }
+
+    body::before {
+      width: 260px;
+      height: 260px;
+      background: #ffb6c1;
+      top: -60px;
+      left: -60px;
+    }
+
+    body::after {
+      width: 300px;
+      height: 300px;
+      background: #e2b6ff;
+      bottom: -80px;
+      right: -60px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 32px 24px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .badge-dev {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: rgba(201, 75, 118, 0.1);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.95rem;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Barra de cupones acumulados */
+    .coupons-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      font-size: 0.88rem;
+    }
+
+    .coupons-bar span {
+      color: var(--text-muted);
+    }
+
+    .coupons-count {
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(201, 75, 118, 0.1);
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+
+    /* Menú de botones */
+    .menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      padding: 15px 18px;
+      border-radius: 18px;
+      color: var(--text-main);
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 20px rgba(201, 75, 118, 0.12);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.98);
+    }
+
+    .icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(201, 75, 118, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-right: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn-text {
+      flex: 1;
+    }
+
+    .btn-title {
+      display: block;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+
+    .btn-sub {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .arrow {
+      color: var(--primary);
+      font-size: 1.1rem;
+      opacity: 0.7;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-btn:hover .arrow {
+      transform: translateX(4px);
+      opacity: 1;
+    }
+
+    /* Botón especial "Te extraño" */
+    .miss-you-section {
+      border-top: 1px dashed var(--border-soft);
+      padding-top: 22px;
+      text-align: center;
+    }
+
+    .btn-miss-you {
+      width: 100%;
+      border: none;
+      background: linear-gradient(135deg, #d65883 0%, #b53b64 100%);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 16px 20px;
+      border-radius: 18px;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(181, 59, 100, 0.28);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-miss-you:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(181, 59, 100, 0.36);
+    }
+
+    .btn-miss-you:disabled {
+      opacity: 0.75;
+      cursor: default;
+      transform: none;
+    }
+
+    .miss-hint {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Si inspecciona el código fuente, se encuentra esto ;) -->
+  <!-- Hecho con cariño, un poco de código y muchas ganas de verte. -->
+
+  <main class="container">
+    <header>
+      <div class="badge-dev">hecho para la churrita</div>
+      <h1>Un pequeño detalle </h1>
+      <p>Armé esta pagina para tí, tiene muchos secretos, ¿los podrás conseguir todos?.</p>
+    </header>
+
+    <!-- Contador sincronizado con localStorage -->
+    <div class="coupons-bar">
+      <span>🎟️ Tus cupones desbloqueados</span>
+      <span class="coupons-count" id="couponCounter">0 ganados</span>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="menu-grid">
+      <a href="cuestionario.html" class="nav-btn">
+        <div class="icon-box">💌</div>
+        <div class="btn-text">
+          <span class="btn-title">¿Cuánto nos conocemos?</span>
+          <span class="btn-sub">algunas preguntas y un secreto</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a href="panoramas.html" class="nav-btn">
+        <div class="icon-box">✨</div>
+        <div class="btn-text">
+          <span class="btn-title">Nuestros próximos panoramas</span>
+          <span class="btn-sub">¿te acuerdas de la ruleta?</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a href="teacuerdas.html" class="nav-btn">
+        <div class="icon-box">📸</div>
+        <div class="btn-text">
+          <span class="btn-title">¿Te acuerdas?</span>
+          <span class="btn-sub">algunos recuerdos de mapachitos</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <a href="canciones.html" class="nav-btn">
+        <div class="icon-box">🎵</div>
+        <div class="btn-text">
+          <span class="btn-title">Canciones que me recuerdan a ti</span>
+          <span class="btn-sub">la musica siempre fue clave en nuestra relación</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+
+    <!-- Botón de notificación directa -->
+    <section class="miss-you-section">
+      <button id="missYouBtn" class="btn-miss-you" onclick="enviarAviso()">
+        <span>🤍</span> <span id="missYouText">Te extraño</span>
+      </button>
+      <p class="miss-hint">Si lo presionas, me llega un aviso directo al teléfono</p>
+    </section>
+
+    <footer>
+      pagina creada con mucha programación y amor para la churrita
+    </footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script>
+    // 1. Cargar cupones ganados desde localStorage (para conectar con cuestionario.html y acertijo.html)
+    function actualizarContadorCupones() {
+      const cupones = JSON.parse(localStorage.getItem('misCupones')) || [];
+      const badge = document.getElementById('couponCounter');
+      badge.textContent = cupones.length === 1 ? '1 ganado' : `${cupones.length} ganados`;
+    }
+
+    actualizarContadorCupones();
+
+    // 2. Función del botón "Te extraño" usando config.js (ntfy.sh)
+    async function enviarAviso() {
+      const btn = document.getElementById('missYouBtn');
+      const text = document.getElementById('missYouText');
+
+      btn.disabled = true;
+      text.textContent = 'Enviando señal...';
+
+      try {
+        await enviarNotificacionNtfy({
+          titulo: 'Aviso especial',
+          mensaje: 'Presionó el botón "Te extraño" en la página web ❤️',
+          tags: 'heart,sparkles'
+        });
+        text.textContent = 'Aviso enviado a mi teléfono ❤️';
+      } catch (error) {
+        console.error('Error al enviar ntfy:', error);
+        text.textContent = 'No se pudo enviar, revisa conexión';
+      }
+
+      // Reactivar después de 6 segundos para evitar clics accidentales seguidos
+      setTimeout(() => {
+        btn.disabled = false;
+        text.textContent = 'Te extraño';
+      }, 6000);
+    }
+  </script>
+</body>
+</html>

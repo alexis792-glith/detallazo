@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Cuánto nos conocemos? 💌</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f8e8ee 50%, #f3d5e0 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --primary: #c94b76;
+      --primary-hover: #a8385e;
+      --text-main: #3b2830;
+      --text-muted: #7a5c68;
+      --border-soft: rgba(201, 75, 118, 0.18);
+      --shadow: 0 10px 30px rgba(168, 56, 94, 0.08);
+      --correct: #2e8b57;
+      --correct-bg: #eaf7f0;
+      --wrong: #c0392b;
+      --wrong-bg: #fdecea;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: -1;
+      opacity: 0.55;
+    }
+
+    body::before {
+      width: 260px;
+      height: 260px;
+      background: #ffb6c1;
+      top: -60px;
+      left: -60px;
+    }
+
+    body::after {
+      width: 300px;
+      height: 300px;
+      background: #e2b6ff;
+      bottom: -80px;
+      right: -60px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+    }
+
+    .step-indicator {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(201, 75, 118, 0.1);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    /* Barra de progreso */
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(201, 75, 118, 0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #e06c94, #c94b76);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: #ffffff;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 75, 118, 0.1);
+    }
+
+    .option-btn.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+      color: var(--correct);
+      font-weight: 600;
+    }
+
+    .option-btn.wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong);
+      color: var(--wrong);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .feedback-msg {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 22px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .next-btn {
+      width: 100%;
+      margin-top: 18px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 600;
+      padding: 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      display: none;
+      transition: background 0.2s;
+    }
+
+    .next-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Pantalla de resultado y cupón */
+    .result-box {
+      text-align: center;
+      display: none;
+    }
+
+    .result-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .score-text {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .coupon-ticket {
+      background: #fff;
+      border: 2px dashed var(--primary);
+      border-radius: 20px;
+      padding: 22px 18px;
+      margin-bottom: 20px;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(201, 75, 118, 0.12);
+    }
+
+    .coupon-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .coupon-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .coupon-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .redeem-btn {
+      background: linear-gradient(135deg, #d65883 0%, #b53b64 100%);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+
+    .redeem-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .redeem-btn:disabled {
+      opacity: 0.75;
+      cursor: default;
+    }
+
+    .retry-btn {
+      background: transparent;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <div class="top-nav">
+      <a href="index.html" class="back-btn">← Volver</a>
+      <span class="step-indicator" id="stepBadge">Pregunta 1 de 10</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <!-- Sección del Quiz -->
+    <div id="quizSection">
+      <h1 id="questionText">Cargando pregunta...</h1>
+      <div class="options-list" id="optionsContainer"></div>
+      <p class="feedback-msg" id="feedbackMsg"></p>
+      <button class="next-btn" id="nextBtn" onclick="siguientePregunta()">Siguiente pregunta →</button>
+    </div>
+
+    <!-- Sección de Resultado -->
+    <div id="resultSection" class="result-box">
+      <h2 id="resultTitle">¡Lo lograste! ✨</h2>
+      <p class="score-text" id="scoreText"></p>
+
+      <!-- Cupón desbloqueado -->
+      <div id="couponUnlocked" class="coupon-ticket" style="display: none;">
+        <span class="coupon-tag">🎟️ Cupón Desbloqueado</span>
+        <div class="coupon-title">Válido por unos besitos</div>
+        <p class="coupon-desc">Canjeable hasta el dia domingo 29 de diciembre.</p>
+        <button class="redeem-btn" id="redeemBtn" onclick="canjearCupon()">Canjear ahora (avisarme)</button>
+      </div>
+
+      <!-- Botón por si sacó bajo puntaje -->
+      <button id="retryBtn" class="retry-btn" style="display: none;" onclick="reiniciarQuiz()">Intentar de nuevo 🔄</button>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script>
+    // EDITA AQUÍ TUS 10 PREGUNTAS (correcta es el índice: 0 = primera, 1 = segunda, 2 = tercera, 3 = cuarta)
+    const preguntas = [
+      {
+        pregunta: "1. ¿Qué pelicula veiamos para nuestro aniversario?",
+        opciones: ["hercules", "it", "zootopia", "la chica del tren"],
+        correcta: 3,
+        acierto: "¡Obvio! si es nuestra peli, siempre sacaba detalles nuevos ✨",
+        error: "Casi... ¡no sé como puedes fallar en esto!"
+      },
+      {
+        pregunta: "2. ¿Cuál es mi mayor miedo?",
+        opciones: ["alturas", "arañas", "soledad", "inyecciones"],
+        correcta: 3,
+        acierto: "Es mi mayor miedo, pero si lo quería superar contigo al vacunarme para ir al amazonas",
+        error: "nada me da mas miedo que ver una aguja, entro en modo supervivencia"
+      },
+      {
+        pregunta: "3. ¿cúal es mi restaurante favorito de perú?",
+        opciones: ["el ruedo", "león", "villa chicken", "la diabla"],
+        correcta: 2,
+        acierto: "en verdad son todos buenos pero villa chicken tiene un aura diferente.",
+        error: "en verdad son todos buenos pero villa chicken tiene un aura diferente."
+      },
+      {
+        pregunta: "4. ¿Donde fue nuestro primer beso?",
+        opciones: ["santiago", "rancagua", "lima", "en mi casa"],
+        correcta: 0,
+        acierto: "a penas llegamos a nuestro cuarto nos besamos de una manera muy apacionada",
+        error: "yo pensaba que tenías mejor memoria."
+      },
+      {
+        pregunta: "5. ¿qué dia fue nuestra primera vez?",
+        opciones: ["12 de octubre", "20 de octubre", "2 de noviembre", "15 de octubre"],
+        correcta: 1,
+        acierto: "lo sé por la evidencia fotografica y por between",
+        error: "es un dia hermoso, tenía muchisimo miedo."
+      },
+      {
+        pregunta: "6. ¿Cómo se llamaban nuestros hijos de sumone?",
+        opciones: ["'Alexlene y Filo'", "'Alexlene y Milo'", "'Alexlene y migaro'", "Alexlene y Ilexis"],
+        correcta: 0,
+        acierto: "los mejores nombres del mundo.",
+        error: "no te acuerdas del nombre de nuestros hijos??? muy maal."
+      },
+      {
+        pregunta: "7. ¿donde fue nuestro primer viaje realmente solos?",
+        opciones: ["cerro san cristobal", "Churín", "chorrillos", "Miraflores"],
+        correcta: 1,
+        acierto: "muy bien, fue un viaje muy bonito, deberiamos repetirlo, tambien conocimos mi favorito (PIEL)",
+        error: "bueno si contamos un viaje realmente solos es churin, lo demas fueron acompañados o despues de churin."
+      },
+      {
+        pregunta: "8. ¿Cuál era nuestra canción?",
+        opciones: ["baile inolvidable", "destino o casualidad", "Elefantes en la barriga", "ojos marrones"],
+        correcta: 1,
+        acierto: "tu que piensas, fue destino o casualidad?",
+        error: "no te puedes equivocar acá, es demasiado facil"
+      },
+      {
+        pregunta: "9. ¿Cúal es mi banda favorita de rock?",
+        opciones: ["soda estereo", "nirvana", "guns n roses", "red hot chilli peppers"],
+        correcta: 3,
+        acierto: "muy bien, ésta estaba dificil",
+        error: "te lo dije muchas veces, soy demasiado fan de rhcp."
+      },
+      {
+        pregunta: "10. Última pregunta: ¿qué es lo que más gusta mas de ti?",
+        opciones: ["Tu poto", "tus senos", "tus muslos", "tu carita"],
+        correcta: 3,
+        acierto: "¡Premio mayor desbloqueado! 🎟️💋",
+        error: "no hay nada que ame mas que ver tu carita sonriendo, me encanta"
+      }
+    ];
+
+    let indiceActual = 0;
+    let puntaje = 0;
+
+    function cargarPregunta() {
+      const actual = preguntas[indiceActual];
+      document.getElementById('stepBadge').textContent = `Pregunta ${indiceActual + 1} de ${preguntas.length}`;
+      document.getElementById('progressBar').style.width = `${((indiceActual + 1) / preguntas.length) * 100}%`;
+      document.getElementById('questionText').textContent = actual.pregunta;
+      document.getElementById('feedbackMsg').textContent = '';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+
+      actual.opciones.forEach((opcion, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opcion;
+        btn.onclick = () => seleccionarOpcion(idx, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function seleccionarOpcion(indiceSeleccionado, botonClickeado) {
+      const actual = preguntas[indiceActual];
+      const botones = document.querySelectorAll('.option-btn');
+      
+      botones.forEach(b => b.disabled = true);
+
+      if (indiceSeleccionado === actual.correcta) {
+        botonClickeado.classList.add('correct');
+        document.getElementById('feedbackMsg').textContent = actual.acierto;
+        puntaje++;
+      } else {
+        botonClickeado.classList.add('wrong');
+        botones[actual.correcta].classList.add('correct');
+        document.getElementById('feedbackMsg').textContent = actual.error;
+      }
+
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.textContent = indiceActual === preguntas.length - 1 ? 'Ver mi premio ✨' : 'Siguiente pregunta →';
+      nextBtn.style.display = 'block';
+    }
+
+    function siguientePregunta() {
+      indiceActual++;
+      if (indiceActual < preguntas.length) {
+        cargarPregunta();
+      } else {
+        mostrarResultado();
+      }
+    }
+
+    function mostrarResultado() {
+      document.getElementById('quizSection').style.display = 'none';
+      document.getElementById('resultSection').style.display = 'block';
+
+      const scoreText = document.getElementById('scoreText');
+      
+      // Aprueba con 6 o más respuestas correctas
+      if (puntaje >= 9) {
+        document.getElementById('resultTitle').textContent = '¡Prueba superada, churrita! 💖';
+        scoreText.textContent = `Acertaste ${puntaje} de ${preguntas.length}. Te ganaste tu recompensa oficial:`;
+        document.getElementById('couponUnlocked').style.display = 'block';
+        guardarCuponEnStorage('Válido por unos besotes');
+      } else {
+        document.getElementById('resultTitle').textContent = '¡Casi, casi! 🙈';
+        scoreText.textContent = `Sacaste ${puntaje} de ${preguntas.length}. Necesitas al menos 9 para desbloquear el cupón, ¡pero puedes intentarlo de nuevo!`;
+        document.getElementById('retryBtn').style.display = 'block';
+      }
+    }
+
+    function guardarCuponEnStorage(nombreCupon) {
+      const cupones = JSON.parse(localStorage.getItem('misCupones')) || [];
+      if (!cupones.includes(nombreCupon)) {
+        cupones.push(nombreCupon);
+        localStorage.setItem('misCupones', JSON.stringify(cupones));
+      }
+    }
+
+    async function canjearCupon() {
+      const btn = document.getElementById('redeemBtn');
+      btn.disabled = true;
+      btn.textContent = 'Avisando...';
+
+      try {
+        await enviarNotificacionNtfy({
+          titulo: 'Cupón canjeado',
+          mensaje: 'La churrita ganó el cuestionario y acaba de canjear: "Válido por besitos 💋"',
+          tags: 'kiss,heart'
+        });
+        btn.textContent = '¡Cupón canjeado! Ya me llegó el aviso ❤️';
+      } catch (error) {
+        console.error('Error al canjear cupón:', error);
+        btn.disabled = false;
+        btn.textContent = 'Reintentar canje';
+      }
+    }
+
+    function reiniciarQuiz() {
+      indiceActual = 0;
+      puntaje = 0;
+      document.getElementById('resultSection').style.display = 'none';
+      document.getElementById('retryBtn').style.display = 'none';
+      document.getElementById('quizSection').style.display = 'block';
+      cargarPregunta();
+    }
+
+    // Iniciar
+    cargarPregunta();
+  </script>
+</body>
+</html>

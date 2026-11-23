@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Te acuerdas? 📸</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f8e8ee 50%, #f3d5e0 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --primary: #c94b76;
+      --primary-hover: #a8385e;
+      --text-main: #3b2830;
+      --text-muted: #7a5c68;
+      --border-soft: rgba(201, 75, 118, 0.18);
+      --shadow: 0 10px 30px rgba(168, 56, 94, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 40px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: -1;
+      opacity: 0.55;
+    }
+
+    body::before {
+      width: 260px;
+      height: 260px;
+      background: #ffb6c1;
+      top: -60px;
+      left: -60px;
+    }
+
+    body::after {
+      width: 300px;
+      height: 300px;
+      background: #e2b6ff;
+      bottom: -80px;
+      right: -60px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 28px 20px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+    }
+
+    .pill-tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(201, 75, 118, 0.1);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .memories-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .memory-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(201, 75, 118, 0.06);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .memory-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(201, 75, 118, 0.12);
+    }
+
+    .photo-box {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #fdf6f8;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-box:hover img {
+      transform: scale(1.02);
+    }
+
+    .memory-caption {
+      padding: 14px 16px;
+      font-size: 0.94rem;
+      color: var(--text-main);
+      line-height: 1.5;
+      border-top: 1px solid rgba(201, 75, 118, 0.08);
+    }
+
+    /* Visor modal al tocar una foto */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(35, 20, 27, 0.82);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 14px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      text-align: center;
+    }
+
+    .lightbox-card img {
+      width: 100%;
+      max-height: 62vh;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #fdf6f8;
+      margin-bottom: 10px;
+    }
+
+    .lightbox-text {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.45;
+      padding: 0 4px;
+    }
+
+    .lightbox-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .fav-btn {
+      flex: 1;
+      border: none;
+      background: linear-gradient(135deg, #d65883 0%, #b53b64 100%);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 11px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .fav-btn:disabled {
+      opacity: 0.75;
+      cursor: default;
+    }
+
+    .close-btn {
+      border: 1.5px solid var(--border-soft);
+      background: #fff;
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 11px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      padding: 24px 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <div class="top-nav">
+      <a href="index.html" class="back-btn">← Volver</a>
+      <span class="pill-tag">🦝 Recuerdos</span>
+    </div>
+
+    <header>
+      <h1>¿Te acuerdas?</h1>
+      <p>Algunas fotos y lo que me hacen recordar de ese momento.</p>
+    </header>
+
+    <section class="memories-list" id="memoriesList"></section>
+  </main>
+
+  <!-- Visor ampliado -->
+  <div class="lightbox" id="lightbox" onclick="cerrarLightbox(event)">
+    <div class="lightbox-card" onclick="event.stopPropagation()">
+      <img id="lightboxImg" src="" alt="Recuerdo">
+      <p class="lightbox-text" id="lightboxText"></p>
+      <div class="lightbox-actions">
+        <button class="fav-btn" id="favPhotoBtn" onclick="avisarFotoFavorita()">
+          🤍 Me encanta este recuerdo
+        </button>
+        <button class="close-btn" onclick="cerrarLightbox()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    // EDITA AQUÍ TUS FOTOS (en la carpeta "churra/") Y EL TEXTO DEBAJO DE CADA UNA
+    const recuerdosChurra = [
+      {
+        archivo: "favorita.jpeg",
+        texto: "Esta es mi foto favorita, tiene un algo especial que me encanta."
+      },
+      {
+        archivo: "pana.jpeg",
+        texto: "un hermoso día, donde fuimos a los panamericanos de chile, ese dia fue genial."
+      },
+      {
+        archivo:"deseo.jpeg",
+        texto:"un lindo dia, donde pedí mi deseo, ojalá se cumpla, un recuerdo hermoso, lo unico malo fue que queda lejos xd"
+      },
+      {
+        archivo:"calor.jpeg",
+        texto:"dios, creo que fue la vez que mas calor sufrí, pero fuera de eso, fue un viaje donde pasamos tiempo juntos, aunque se pudo mejorar bastante"
+      },
+      {
+        archivo:"primera.jpg",
+        texto:"nuestra primera vez, que hermoso recuerdo, estaba muy nervioso, pero tu me hiciste tranquilizar y eso me ayudó bastante, amo demasiado ese momento"
+      },
+      {
+        archivo:"nosotros.jpg",
+        texto:"un lindo recuerdo, no me quería alejar de ti, como siempre, esos momentos eran muy tristes, pero eran una gran muestra de amor"
+      },
+      {
+        archivo:"piscina.jpg",
+        texto:"un hermoso recuerdo, es de mis fotos favoritas, un lindo dia en la piscina"
+      },
+      {
+        archivo:"paseo.jpeg",
+        texto:"una foto picarona en medio de mi familia, casi nos cachan jaja"
+      },
+      {
+        archivo:"navidad.jpeg",
+        texto:"una foto de nuestra navidad juntos, antes de tirar cohetes jeje"
+      },
+      {
+        archivo:"amor.jpeg",
+        texto:"yo siempre picaro, esa mano está en posicion de adelanto, pero un lindo recuerdo tambien"
+      },
+      {
+        archivo:"amor2.jpeg",
+        texto:"no me devolvias el beso, te haces la dificil"
+      },
+      {
+        archivo:"dormida.jpeg",
+        texto:"si mal no recuedo volviamos de donde fiorella, tuvimos mucha intimidad en esa casa jaja, la profanaste"
+      },
+      {
+        archivo:"ebrio.jpeg",
+        texto:"no me acuerdo mucho de ese viaje, tenía resaca, había bebido bastante, pero le cumplí la palabra a sara"
+      },
+      {
+        archivo:"gatos.jpeg",
+        texto:"me encanta esta foto, si mal no recuerdo, me iba a chambear y tu toda dormida un sabado"
+      },
+      {
+        archivo:"rosa.jpeg",
+        texto:"la primera foto que te saqué en mi casa"
+      },
+      {
+        archivo:"cena.jpeg",
+        texto:"nuestra cena, hermoso recuerdo, tuvimos que hacer 2 delivery por que no nos quedaban con... y tuvimos que comprar jaja"
+      },
+      {
+        archivo:"jhon.jpeg",
+        texto:"fuimos a verlos a tu casita durante la chamba, me diste fuerza con tus besitos sanadores"
+      },
+    ];
+
+    let recuerdoActivo = null;
+
+    function cargarRecuerdos() {
+      const lista = document.getElementById('memoriesList');
+      lista.innerHTML = '';
+
+      if (!recuerdosChurra.length) {
+        lista.innerHTML = '<p class="empty-msg">Agrega tus fotos y textos en recuerdosChurra dentro de teacuerdas.html.</p>';
+        return;
+      }
+
+      recuerdosChurra.forEach((item) => {
+        const ruta = `churra/${item.archivo}`;
+        const card = document.createElement('article');
+        card.className = 'memory-card';
+
+        const photoBox = document.createElement('div');
+        photoBox.className = 'photo-box';
+        photoBox.onclick = () => abrirLightbox(ruta, item.archivo, item.texto);
+
+        const img = document.createElement('img');
+        img.src = ruta;
+        img.alt = item.texto || "Recuerdo";
+        img.loading = "lazy";
+        img.onerror = () => card.remove();
+
+        photoBox.appendChild(img);
+
+        const caption = document.createElement('p');
+        caption.className = 'memory-caption';
+        caption.textContent = item.texto;
+
+        card.appendChild(photoBox);
+        card.appendChild(caption);
+        lista.appendChild(card);
+      });
+    }
+
+    function abrirLightbox(ruta, archivo, texto) {
+      recuerdoActivo = { archivo, texto };
+      const btn = document.getElementById('favPhotoBtn');
+      btn.disabled = false;
+      btn.textContent = '🤍 Me encanta este recuerdo';
+      document.getElementById('lightboxImg').src = ruta;
+      document.getElementById('lightboxText').textContent = texto;
+      document.getElementById('lightbox').classList.add('open');
+    }
+
+    function cerrarLightbox(event) {
+      if (event && event.target !== document.getElementById('lightbox')) return;
+      document.getElementById('lightbox').classList.remove('open');
+    }
+
+    async function avisarFotoFavorita() {
+      if (!recuerdoActivo) return;
+      const btn = document.getElementById('favPhotoBtn');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      try {
+        await enviarNotificacionNtfy({
+          titulo: 'Recuerdo favorito',
+          mensaje: `Marcó un recuerdo en ¿Te acuerdas? (${recuerdoActivo.archivo}) 📸`,
+          tags: 'camera,heart'
+        });
+        btn.textContent = '¡Avisado! ❤️';
+      } catch (error) {
+        console.error('Error al enviar ntfy:', error);
+        btn.disabled = false;
+        btn.textContent = '🤍 Me encanta este recuerdo';
+      }
+    }
+
+    cargarRecuerdos();
+  </script>
+</body>
+</html>

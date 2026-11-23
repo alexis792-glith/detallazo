@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canciones que me recuerdan a ti 🎵</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f8e8ee 50%, #f3d5e0 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --primary: #c94b76;
+      --primary-hover: #a8385e;
+      --text-main: #3b2830;
+      --text-muted: #7a5c68;
+      --border-soft: rgba(201, 75, 118, 0.18);
+      --shadow: 0 10px 30px rgba(168, 56, 94, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: -1;
+      opacity: 0.55;
+    }
+
+    body::before {
+      width: 260px;
+      height: 260px;
+      background: #ffb6c1;
+      top: -60px;
+      left: -60px;
+    }
+
+    body::after {
+      width: 300px;
+      height: 300px;
+      background: #e2b6ff;
+      bottom: -80px;
+      right: -60px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+    }
+
+    .pill-tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(201, 75, 118, 0.1);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .player-card {
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 22px;
+      padding: 20px 18px;
+      box-shadow: 0 6px 20px rgba(201, 75, 118, 0.06);
+    }
+
+    .now-playing {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .vinyl-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(214, 88, 131, 0.16), rgba(181, 59, 100, 0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .track-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .track-title {
+      font-weight: 600;
+      font-size: 1.08rem;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .track-artist {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .track-story {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      background: #fdf6f8;
+      border-left: 3px solid var(--primary);
+      padding: 11px 13px;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 16px;
+      line-height: 1.48;
+    }
+
+    audio {
+      width: 100%;
+      height: 42px;
+      margin-bottom: 14px;
+      accent-color: var(--primary);
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .shuffle-btn {
+      flex: 1;
+      border: none;
+      background: linear-gradient(135deg, #d65883 0%, #b53b64 100%);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 16px rgba(181, 59, 100, 0.22);
+    }
+
+    .shuffle-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .notify-btn {
+      border: 1.5px solid var(--border-soft);
+      background: #fff;
+      color: var(--primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .notify-btn:hover:not(:disabled) {
+      background: rgba(201, 75, 118, 0.08);
+      border-color: var(--primary);
+    }
+
+    .notify-btn:disabled {
+      opacity: 0.7;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <div class="top-nav">
+      <a href="index.html" class="back-btn">← Volver</a>
+      <span class="pill-tag">🔀 Modo aleatorio</span>
+    </div>
+
+    <header>
+      <h1>Canciones que me recuerdan a ti</h1>
+      <p>muchas historias bonitas que me llegan a la mente con estas canciones.</p>
+    </header>
+
+    <section class="player-card">
+      <div class="now-playing">
+        <div class="vinyl-badge">🎵</div>
+        <div class="track-info">
+          <div class="track-title" id="trackTitle">Cargando...</div>
+          <div class="track-artist" id="trackArtist"></div>
+        </div>
+      </div>
+
+      <p class="track-story" id="trackStory"></p>
+
+      <audio id="audioPlayer" controls preload="metadata">
+        Tu navegador no soporta reproducción de audio.
+      </audio>
+
+      <div class="controls-row">
+        <button class="shuffle-btn" onclick="cargarCancionAleatoria(true)">
+          🔀 Otra al azar
+        </button>
+        <button class="notify-btn" id="notifySongBtn" onclick="avisarCancionActual()">
+          🤍 Me encanta
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script>
+    // Coloca tus archivos .mp3 dentro de la carpeta "audio/"
+      const canciones = [
+  {
+    titulo: "baile inolvidable",
+    artista: "bad bunny",
+    historia: "me recuerda, por que yo tambien siento que tu me enseñaste a amar.",
+    archivo: "audio/baile_inolvidable.mp3" // <-- pon aquí el nombre exacto de tu archivo
+  },
+      {
+        titulo: "ojitos lindos",
+        artista: "bad bunny",
+        historia: "lo mucho que la hemos cantado, me encanta cuando me la cantas, me hace sentir amado",
+        archivo: "audio/ojitos_lindos.mp3"
+      },
+      {
+        titulo: "destino o casualidad",
+        artista: "ha ash y melendi",
+        historia: "una cancion que define bastante nuestra relacion.",
+        archivo: "audio/bestino_casualidad.mp3"
+      },
+    {
+        titulo: "ojos marrones",
+        artista: "lasso",
+        historia: "me encanta cuando me la cantas, aunque no tenga los ojos marrones jeje",
+        archivo: "audio/ojos.mp3"
+      },
+      {
+        titulo: "elefantes en la barriga",
+        artista: "lasso",
+        historia: "la primera cancion que me dedicaste y la amo por eso.",
+        archivo: "audio/elefantes.mp3"
+      }
+    ];
+
+    const player = document.getElementById('audioPlayer');
+    let indiceActual = -1;
+
+    function elegirIndiceAleatorio() {
+      if (canciones.length <= 1) return 0;
+
+      const candidatos = canciones
+        .map((_, idx) => idx)
+        .filter(idx => idx !== indiceActual);
+
+      const randomIdx = Math.floor(Math.random() * candidatos.length);
+      return candidatos[randomIdx];
+    }
+
+    function cargarCancionAleatoria(reproducirAutomaticamente = false) {
+      if (!canciones.length) return;
+
+      indiceActual = elegirIndiceAleatorio();
+      const cancion = canciones[indiceActual];
+
+      document.getElementById('trackTitle').textContent = cancion.titulo;
+      document.getElementById('trackArtist').textContent = cancion.artista;
+      document.getElementById('trackStory').textContent = cancion.historia;
+
+      player.src = cancion.archivo;
+      player.load();
+
+      if (reproducirAutomaticamente) {
+        player.play().catch(() => {
+          // Si el navegador bloquea autoplay sin interacción previa, queda lista para darle play
+        });
+      }
+    }
+
+    // Cuando termina una canción, pasa automáticamente a otra aleatoria
+    player.addEventListener('ended', () => {
+      cargarCancionAleatoria(true);
+    });
+
+    async function avisarCancionActual() {
+      if (indiceActual < 0) return;
+      const cancion = canciones[indiceActual];
+      const btn = document.getElementById('notifySongBtn');
+      const textoOriginal = btn.textContent;
+
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      try {
+        await enviarNotificacionNtfy({
+          titulo: 'Le gustó una canción',
+          mensaje: `Marcó "${cancion.titulo}" (${cancion.artista}) en el reproductor aleatorio 🎵`,
+          tags: 'musical_note,heart'
+        });
+        btn.textContent = '¡Avisado! ❤️';
+      } catch (error) {
+        console.error('Error al enviar ntfy:', error);
+        btn.disabled = false;
+        btn.textContent = textoOriginal;
+        return;
+      }
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = textoOriginal;
+      }, 4500);
+    }
+
+    // Carga una canción inicial al abrir la página (sin autoplay brusco)
+    cargarCancionAleatoria(false);
+  </script>
+</body>
+</html>
