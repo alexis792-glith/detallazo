@@ -6,17 +6,17 @@
   <title>Canciones que me recuerdan a ti 🎵</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f8e8ee 50%, #f3d5e0 100%);
-      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-bg: rgba(255, 255, 255, 0.88);
       --primary: #c94b76;
-      --primary-hover: #a8385e;
+      --primary-dark: #a8385e;
       --text-main: #3b2830;
       --text-muted: #7a5c68;
-      --border-soft: rgba(201, 75, 118, 0.18);
-      --shadow: 0 10px 30px rgba(168, 56, 94, 0.08);
+      --border-soft: rgba(201, 75, 118, 0.16);
+      --shadow: 0 12px 34px rgba(168, 56, 94, 0.1);
     }
 
     * {
@@ -32,8 +32,7 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 24px 16px;
+      padding: 22px 16px 42px;
       position: relative;
       overflow-x: hidden;
     }
@@ -65,15 +64,15 @@
 
     .container {
       width: 100%;
-      max-width: 450px;
+      max-width: 460px;
       background: var(--card-bg);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 28px;
-      padding: 28px 22px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      border-radius: 30px;
+      padding: 24px 20px 28px;
       box-shadow: var(--shadow);
-      animation: fadeIn 0.6s ease-out;
+      animation: fadeIn 0.55s ease-out;
     }
 
     @keyframes fadeIn {
@@ -85,7 +84,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .back-btn {
@@ -104,7 +103,7 @@
     }
 
     .pill-tag {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       color: var(--primary);
       background: rgba(201, 75, 118, 0.1);
@@ -114,129 +113,334 @@
 
     header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.65rem;
+      font-size: 1.58rem;
       line-height: 1.25;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     header p {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
-    .player-card {
+    /* Tarjeta principal estilo Spotify */
+    .spotify-card {
       background: #ffffff;
       border: 1px solid var(--border-soft);
-      border-radius: 22px;
+      border-radius: 24px;
       padding: 20px 18px;
-      box-shadow: 0 6px 20px rgba(201, 75, 118, 0.06);
+      box-shadow: 0 8px 24px rgba(201, 75, 118, 0.07);
+      margin-bottom: 18px;
     }
 
-    .now-playing {
+    .cover-area {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 14px;
+      text-align: center;
       margin-bottom: 14px;
     }
 
-    .vinyl-badge {
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(214, 88, 131, 0.16), rgba(181, 59, 100, 0.08));
+    .album-art {
+      width: 118px;
+      height: 118px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, #e56b95 0%, #9b3559 100%);
+      box-shadow: 0 12px 26px rgba(181, 59, 100, 0.26);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
+      margin-bottom: 14px;
+      position: relative;
+      transition: transform 0.35s ease, border-radius 0.35s ease;
     }
 
-    .track-info {
+    .album-art.playing {
+      border-radius: 50%;
+      animation: spinSlow 11s linear infinite;
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .vinyl-core {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: inset 0 0 0 3px rgba(201, 75, 118, 0.2);
+    }
+
+    .track-header-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .track-meta {
       flex: 1;
       min-width: 0;
     }
 
     .track-title {
-      font-weight: 600;
-      font-size: 1.08rem;
+      font-weight: 700;
+      font-size: 1.15rem;
       color: var(--text-main);
-      margin-bottom: 2px;
+      text-transform: capitalize;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .track-artist {
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
+      text-transform: capitalize;
+      margin-top: 2px;
     }
 
+    .like-btn {
+      border: 1.5px solid var(--border-soft);
+      background: #fdf6f8;
+      color: var(--primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .like-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .like-btn:disabled {
+      opacity: 0.8;
+      cursor: default;
+    }
+
+    /* Mensaje dedicado */
     .track-story {
       font-size: 0.9rem;
       color: var(--text-main);
       background: #fdf6f8;
       border-left: 3px solid var(--primary);
       padding: 11px 13px;
-      border-radius: 0 12px 12px 0;
-      margin-bottom: 16px;
+      border-radius: 0 14px 14px 0;
+      margin: 14px 0 16px;
       line-height: 1.48;
     }
 
-    audio {
-      width: 100%;
-      height: 42px;
+    /* Barra de progreso */
+    .progress-wrapper {
       margin-bottom: 14px;
-      accent-color: var(--primary);
     }
 
-    .controls-row {
+    .progress-bar {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: #f0d7e1;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .progress-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(168, 56, 94, 0.35);
+      transition: transform 0.15s;
+    }
+
+    .progress-bar::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .time-row {
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-variant-numeric: tabular-nums;
     }
 
-    .shuffle-btn {
-      flex: 1;
+    /* Botones de control */
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .ctrl-btn:hover {
+      background: rgba(201, 75, 118, 0.1);
+      color: var(--primary);
+    }
+
+    .ctrl-btn.active {
+      color: var(--primary);
+      background: rgba(201, 75, 118, 0.14);
+    }
+
+    .play-pause-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
       border: none;
       background: linear-gradient(135deg, #d65883 0%, #b53b64 100%);
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.92rem;
-      font-weight: 600;
-      padding: 12px 14px;
-      border-radius: 14px;
+      color: #ffffff;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      box-shadow: 0 8px 20px rgba(181, 59, 100, 0.3);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 6px 16px rgba(181, 59, 100, 0.22);
     }
 
-    .shuffle-btn:hover {
-      transform: translateY(-1px);
+    .play-pause-btn:hover {
+      transform: scale(1.06);
+      box-shadow: 0 10px 24px rgba(181, 59, 100, 0.38);
     }
 
-    .notify-btn {
-      border: 1.5px solid var(--border-soft);
-      background: #fff;
-      color: var(--primary);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 600;
-      padding: 12px 14px;
+    /* Lista de canciones para escoger */
+    .playlist-section {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border-soft);
+      border-radius: 22px;
+      padding: 14px 12px;
+    }
+
+    .playlist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 6px 10px;
+      border-bottom: 1px solid rgba(201, 75, 118, 0.1);
+      margin-bottom: 8px;
+    }
+
+    .playlist-header span {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .playlist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .song-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 10px;
       border-radius: 14px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background 0.2s ease, transform 0.15s ease;
+      border: 1px solid transparent;
     }
 
-    .notify-btn:hover:not(:disabled) {
-      background: rgba(201, 75, 118, 0.08);
-      border-color: var(--primary);
+    .song-row:hover {
+      background: rgba(255, 255, 255, 0.9);
     }
 
-    .notify-btn:disabled {
-      opacity: 0.7;
-      cursor: default;
+    .song-row.active {
+      background: #ffffff;
+      border-color: var(--border-soft);
+      box-shadow: 0 4px 12px rgba(201, 75, 118, 0.08);
+    }
+
+    .song-index {
+      width: 24px;
+      text-align: center;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .song-row.active .song-index {
+      color: var(--primary);
+    }
+
+    .song-row-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .song-row-title {
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-transform: capitalize;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-row.active .song-row-title {
+      color: var(--primary);
+    }
+
+    .song-row-artist {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: capitalize;
+    }
+
+    .song-row-badge {
+      font-size: 0.78rem;
+      color: var(--primary);
+      font-weight: 600;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -245,7 +449,7 @@
   <main class="container">
     <div class="top-nav">
       <a href="index.html" class="back-btn">← Volver</a>
-      <span class="pill-tag">🔀 Modo aleatorio</span>
+      <span class="pill-tag">🎧 Nuestra playlist</span>
     </div>
 
     <header>
@@ -253,116 +457,308 @@
       <p>muchas historias bonitas que me llegan a la mente con estas canciones.</p>
     </header>
 
-    <section class="player-card">
-      <div class="now-playing">
-        <div class="vinyl-badge">🎵</div>
-        <div class="track-info">
-          <div class="track-title" id="trackTitle">Cargando...</div>
-          <div class="track-artist" id="trackArtist"></div>
+    <!-- Reproductor principal -->
+    <section class="spotify-card">
+      <div class="cover-area">
+        <div class="album-art" id="albumArt">
+          <div class="vinyl-core" id="albumEmoji">🎵</div>
+        </div>
+
+        <div class="track-header-row">
+          <div class="track-meta">
+            <div class="track-title" id="trackTitle">Cargando...</div>
+            <div class="track-artist" id="trackArtist"></div>
+          </div>
+          <button class="like-btn" id="notifySongBtn" onclick="avisarCancionActual()">
+            🤍 Me encanta
+          </button>
         </div>
       </div>
 
+      <!-- Mensaje / historia de la canción seleccionada -->
       <p class="track-story" id="trackStory"></p>
 
-      <audio id="audioPlayer" controls preload="metadata">
-        Tu navegador no soporta reproducción de audio.
-      </audio>
+      <!-- Barra de tiempo -->
+      <div class="progress-wrapper">
+        <input type="range" class="progress-bar" id="progressBar" value="0" min="0" max="100" step="0.1">
+        <div class="time-row">
+          <span id="currentTime">0:00</span>
+          <span id="totalDuration">0:00</span>
+        </div>
+      </div>
 
-      <div class="controls-row">
-        <button class="shuffle-btn" onclick="cargarCancionAleatoria(true)">
-          🔀 Otra al azar
+      <!-- Controles -->
+      <div class="player-controls">
+        <button class="ctrl-btn" id="shuffleToggleBtn" title="Modo aleatorio" onclick="alternarAleatorio()">
+          🔀
         </button>
-        <button class="notify-btn" id="notifySongBtn" onclick="avisarCancionActual()">
-          🤍 Me encanta
+        <button class="ctrl-btn" title="Anterior" onclick="cancionAnterior()">
+          ⏮
+        </button>
+        <button class="play-pause-btn" id="playPauseBtn" title="Reproducir / Pausar" onclick="togglePlay()">
+          ▶
+        </button>
+        <button class="ctrl-btn" title="Siguiente" onclick="siguienteCancion()">
+          ⏭
+        </button>
+        <button class="ctrl-btn" title="Canción al azar ahora" onclick="saltarAlAzar()">
+          🎲
         </button>
       </div>
+
+      <audio id="audioPlayer" preload="metadata"></audio>
+    </section>
+
+    <!-- Lista de canciones para escoger -->
+    <section class="playlist-section">
+      <div class="playlist-header">
+        <span>Elige una canción</span>
+        <span id="songCount">0 temas</span>
+      </div>
+      <div class="playlist-list" id="playlistContainer"></div>
     </section>
   </main>
 
   <script src="config.js"></script>
   <script>
-    // Coloca tus archivos .mp3 dentro de la carpeta "audio/"
-      const canciones = [
-  {
-    titulo: "baile inolvidable",
-    artista: "bad bunny",
-    historia: "me recuerda, por que yo tambien siento que tu me enseñaste a amar.",
-    archivo: "audio/baile_inolvidable.mp3" // <-- pon aquí el nombre exacto de tu archivo
-  },
+    const canciones = [
+      {
+        titulo: "baile inolvidable",
+        artista: "bad bunny",
+        emoji: "💃",
+        historia: "me recuerda, por que yo tambien siento que tu me enseñaste a amar.",
+        archivo: "audio/baile_inolvidable.mp3"
+      },
       {
         titulo: "ojitos lindos",
         artista: "bad bunny",
+        emoji: "✨",
         historia: "lo mucho que la hemos cantado, me encanta cuando me la cantas, me hace sentir amado",
         archivo: "audio/ojitos_lindos.mp3"
       },
       {
         titulo: "destino o casualidad",
         artista: "ha ash y melendi",
+        emoji: "🌙",
         historia: "una cancion que define bastante nuestra relacion.",
-        archivo: "audio/bestino_casualidad.mp3"
+        archivo: "audio/destino_casualidad.mp3"
       },
-    {
+      {
         titulo: "ojos marrones",
         artista: "lasso",
+        emoji: "🤎",
         historia: "me encanta cuando me la cantas, aunque no tenga los ojos marrones jeje",
         archivo: "audio/ojos.mp3"
       },
       {
         titulo: "elefantes en la barriga",
         artista: "lasso",
+        emoji: "🐘",
         historia: "la primera cancion que me dedicaste y la amo por eso.",
         archivo: "audio/elefantes.mp3"
       },
       {
-        titulo:"diganle",
-        artista:"corazon serrano",
-        historia:"es una cancion que me hizo amar perú y me gustó demasiado, aparte me encanta cuando me la cantas",
-        archivo:"audio/diganle.mp3"
-      }
+        titulo: "diganle",
+        artista: "corazon serrano",
+        emoji: "💖",
+        historia: "es una cancion que me hizo amar perú y me gustó demasiado, aparte me encanta cuando me la cantas",
+        archivo: "audio/diganle.mp3"
+      },
+      {
+        titulo:"lo siento bb :/",
+        artista:"bad bunny y julieta venegas",
+        emoji:"💔",
+        historia:"es una cancion que escuchabamos antes y siempre recuerda a tí",
+        archivo:"audio/losiento.mp3"
+      },
+       {
+        titulo:"mamichula",
+        artista:"trueno y nicky nicole",
+        emoji:"⛈️",
+        historia:"antes de que pasara todo, escuchaba esta cancion y yo sentía que eras la lluvia de mi trueno",
+        archivo:"audio/mamichula.mp3"
+      },
+       {
+        titulo:"one day",
+        artista:"dua lipa, bad bunny y j balvin",
+        emoji:"🥹",
+        historia:"es una cancion que escuchabamos bastante y en esos momentos tristes la letra se reglejaba bastante a lo que pensaba",
+        archivo:"audio/oneday.mp3"
+      },
+       {
+        titulo:"fragil",
+        artista:"grupo frontera y yharista",
+        emoji:"😭",
+        historia:"una cancion que reflejaba lo que pensaba en esos momentos, necesitaba un corazón fuerte que aguantara todo el dolor",
+        archivo:"audio/fragil.mp3"
+      },
+      {
+        titulo:"mojabi ghost",
+        artista:"bad bunny y tainy",
+        emoji:"👻",
+        historia:"cancion que me reflejaba bastante, soñaba con sacarte de mi cabeza",
+        archivo:"audio:MOJABI.mp3"
+      },
+      {
+        titulo:"entre nosotros remix",
+        artista:"tiago PZK, lit killah, maria becerra y nicki nicole",
+        emoji:"😪",
+        historia:"mi cancion favorita, la he escuchado millones de veces este año, me representaba totalmente",
+        archivo:"audio/entre.mp3"
+      },
     ];
 
     const player = document.getElementById('audioPlayer');
-    let indiceActual = -1;
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const albumArt = document.getElementById('albumArt');
+    const progressBar = document.getElementById('progressBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalDurationEl = document.getElementById('totalDuration');
+    const shuffleToggleBtn = document.getElementById('shuffleToggleBtn');
 
-    function elegirIndiceAleatorio() {
-      if (canciones.length <= 1) return 0;
+    let indiceActual = 0;
+    let modoAleatorio = false;
 
-      const candidatos = canciones
-        .map((_, idx) => idx)
-        .filter(idx => idx !== indiceActual);
-
-      const randomIdx = Math.floor(Math.random() * candidatos.length);
-      return candidatos[randomIdx];
+    function formatearTiempo(segundos) {
+      if (!isFinite(segundos) || segundos < 0) return '0:00';
+      const min = Math.floor(segundos / 60);
+      const seg = Math.floor(segundos % 60);
+      return `${min}:${seg < 10 ? '0' : ''}${seg}`;
     }
 
-    function cargarCancionAleatoria(reproducirAutomaticamente = false) {
-      if (!canciones.length) return;
+    function actualizarBarraVisual() {
+      const porcentaje = progressBar.max > 0 ? (progressBar.value / progressBar.max) * 100 : 0;
+      progressBar.style.background = `linear-gradient(to right, #c94b76 ${porcentaje}%, #f0d7e1 ${porcentaje}%)`;
+    }
 
-      indiceActual = elegirIndiceAleatorio();
+    function renderizarPlaylist() {
+      const container = document.getElementById('playlistContainer');
+      document.getElementById('songCount').textContent = `${canciones.length} temas`;
+      container.innerHTML = '';
+
+      canciones.forEach((cancion, idx) => {
+        const esActiva = idx === indiceActual;
+        const row = document.createElement('div');
+        row.className = `song-row ${esActiva ? 'active' : ''}`;
+        row.onclick = () => seleccionarCancion(idx, true);
+
+        row.innerHTML = `
+          <div class="song-index">${esActiva ? '▶' : idx + 1}</div>
+          <div class="song-row-info">
+            <div class="song-row-title">${cancion.titulo}</div>
+            <div class="song-row-artist">${cancion.artista}</div>
+          </div>
+          <div class="song-row-badge">${esActiva ? 'Sonando' : (cancion.emoji || '🎵')}</div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    function seleccionarCancion(indice, reproducir = false) {
+      if (!canciones.length) return;
+      indiceActual = (indice + canciones.length) % canciones.length;
       const cancion = canciones[indiceActual];
 
       document.getElementById('trackTitle').textContent = cancion.titulo;
       document.getElementById('trackArtist').textContent = cancion.artista;
       document.getElementById('trackStory').textContent = cancion.historia;
+      document.getElementById('albumEmoji').textContent = cancion.emoji || '🎵';
+
+      progressBar.value = 0;
+      currentTimeEl.textContent = '0:00';
+      totalDurationEl.textContent = '0:00';
+      actualizarBarraVisual();
 
       player.src = cancion.archivo;
       player.load();
+      renderizarPlaylist();
 
-      if (reproducirAutomaticamente) {
-        player.play().catch(() => {
-          // Si el navegador bloquea autoplay sin interacción previa, queda lista para darle play
-        });
+      if (reproducir) {
+        player.play().catch(() => {});
       }
     }
 
-    // Cuando termina una canción, pasa automáticamente a otra aleatoria
+    function togglePlay() {
+      if (player.paused) {
+        player.play().catch(() => {});
+      } else {
+        player.pause();
+      }
+    }
+
+    function alternarAleatorio() {
+      modoAleatorio = !modoAleatorio;
+      shuffleToggleBtn.classList.toggle('active', modoAleatorio);
+    }
+
+    function obtenerIndiceAleatorioDistinto() {
+      if (canciones.length <= 1) return 0;
+      const candidatos = canciones.map((_, idx) => idx).filter(idx => idx !== indiceActual);
+      return candidatos[Math.floor(Math.random() * candidatos.length)];
+    }
+
+    function saltarAlAzar() {
+      seleccionarCancion(obtenerIndiceAleatorioDistinto(), true);
+    }
+
+    function siguienteCancion() {
+      if (modoAleatorio) {
+        saltarAlAzar();
+      } else {
+        seleccionarCancion(indiceActual + 1, true);
+      }
+    }
+
+    function cancionAnterior() {
+      if (player.currentTime > 3) {
+        player.currentTime = 0;
+        return;
+      }
+      if (modoAleatorio) {
+        saltarAlAzar();
+      } else {
+        seleccionarCancion(indiceActual - 1, true);
+      }
+    }
+
+    // Eventos del audio
+    player.addEventListener('play', () => {
+      playPauseBtn.textContent = '⏸';
+      albumArt.classList.add('playing');
+    });
+
+    player.addEventListener('pause', () => {
+      playPauseBtn.textContent = '▶';
+      albumArt.classList.remove('playing');
+    });
+
+    player.addEventListener('loadedmetadata', () => {
+      progressBar.max = player.duration || 100;
+      totalDurationEl.textContent = formatearTiempo(player.duration);
+      actualizarBarraVisual();
+    });
+
+    player.addEventListener('timeupdate', () => {
+      progressBar.value = player.currentTime;
+      currentTimeEl.textContent = formatearTiempo(player.currentTime);
+      actualizarBarraVisual();
+    });
+
     player.addEventListener('ended', () => {
-      cargarCancionAleatoria(true);
+      siguienteCancion();
+    });
+
+    progressBar.addEventListener('input', () => {
+      player.currentTime = progressBar.value;
+      currentTimeEl.textContent = formatearTiempo(player.currentTime);
+      actualizarBarraVisual();
     });
 
     async function avisarCancionActual() {
-      if (indiceActual < 0) return;
       const cancion = canciones[indiceActual];
+      if (!cancion) return;
+
       const btn = document.getElementById('notifySongBtn');
       const textoOriginal = btn.textContent;
 
@@ -372,7 +768,7 @@
       try {
         await enviarNotificacionNtfy({
           titulo: 'Le gustó una canción',
-          mensaje: `Marcó "${cancion.titulo}" (${cancion.artista}) en el reproductor aleatorio 🎵`,
+          mensaje: `Marcó "${cancion.titulo}" (${cancion.artista}) en la playlist 🎵`,
           tags: 'musical_note,heart'
         });
         btn.textContent = '¡Avisado! ❤️';
@@ -389,8 +785,8 @@
       }, 4500);
     }
 
-    // Carga una canción inicial al abrir la página (sin autoplay brusco)
-    cargarCancionAleatoria(false);
+    // Inicia con una canción al azar lista para reproducir
+    seleccionarCancion(Math.floor(Math.random() * canciones.length), false);
   </script>
 </body>
 </html>
