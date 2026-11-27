@@ -129,24 +129,59 @@
       line-height: 1.45;
     }
 
-    .memories-list {
+    .swipe-deck {
+      position: relative;
+      width: 100%;
+      min-height: 465px;
       display: flex;
-      flex-direction: column;
-      gap: 18px;
+      justify-content: center;
+      align-items: flex-start;
+      touch-action: pan-y;
     }
 
-    .memory-card {
+    .swipe-card {
+      position: absolute;
+      width: 100%;
       background: #ffffff;
       border: 1.5px solid var(--border-soft);
       border-radius: 22px;
       overflow: hidden;
-      box-shadow: 0 6px 18px rgba(201, 75, 118, 0.06);
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      box-shadow: 0 10px 26px rgba(168, 56, 94, 0.12);
+      user-select: none;
+      cursor: grab;
+      transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
-    .memory-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(201, 75, 118, 0.12);
+    .swipe-card.dragging {
+      transition: none;
+      cursor: grabbing;
+    }
+
+    .swipe-badge {
+      position: absolute;
+      top: 16px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+      z-index: 5;
+    }
+
+    .swipe-badge.like {
+      left: 16px;
+      background: #e83e78;
+      color: #fff;
+      transform: rotate(-10deg);
+    }
+
+    .swipe-badge.pass {
+      right: 16px;
+      background: rgba(59, 40, 48, 0.85);
+      color: #fff;
+      transform: rotate(10deg);
     }
 
     .photo-box {
@@ -175,6 +210,35 @@
       color: var(--text-main);
       line-height: 1.5;
       border-top: 1px solid rgba(201, 75, 118, 0.08);
+    }
+
+    .swipe-controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .swipe-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(168, 56, 94, 0.12);
+    }
+
+    .swipe-btn.pass {
+      background: #fff;
+      color: var(--text-main);
+      border: 1.5px solid var(--border-soft);
+    }
+
+    .swipe-btn.like {
+      background: linear-gradient(135deg, #d65883 0%, #b53b64 100%);
+      color: #fff;
     }
 
     /* Visor modal al tocar una foto */
@@ -269,15 +333,20 @@
   <main class="container">
     <div class="top-nav">
       <a href="index.html" class="back-btn">← Volver</a>
-      <span class="pill-tag">🦝 Recuerdos</span>
+      <span class="pill-tag" id="contadorRecuerdos">🦝 Recuerdos</span>
     </div>
 
     <header>
       <h1>¿Te acuerdas?</h1>
-      <p>Algunas fotos y lo que me hacen recordar de ese momento.</p>
+      <p>Desliza a la derecha para darle ❤️, a la izquierda para pasar o toca para verla grande.</p>
     </header>
 
-    <section class="memories-list" id="memoriesList"></section>
+    <section class="swipe-deck" id="swipeDeck"></section>
+
+    <div class="swipe-controls" id="swipeControls">
+      <button class="swipe-btn pass" type="button" onclick="dispararSwipe(-1)">✕ Siguiente</button>
+      <button class="swipe-btn like" type="button" onclick="dispararSwipe(1)">❤️ Me encanta</button>
+    </div>
   </main>
 
   <!-- Visor ampliado -->
@@ -296,7 +365,6 @@
 
   <script src="config.js"></script>
   <script>
-    // EDITA AQUÍ TUS FOTOS (en la carpeta "churra/") Y EL TEXTO DEBAJO DE CADA UNA
     const recuerdosChurra = [
       {
         archivo: "favorita.jpeg",
@@ -307,92 +375,135 @@
         texto: "un hermoso día, donde fuimos a los panamericanos de chile, ese dia fue genial."
       },
       {
-        archivo:"deseo.jpeg",
-        texto:"un lindo dia, donde pedí mi deseo, ojalá se cumpla, un recuerdo hermoso, lo unico malo fue que queda lejos xd"
+        archivo: "deseo.jpeg",
+        texto: "un lindo dia, donde pedí mi deseo, ojalá se cumpla, un recuerdo hermoso, lo unico malo fue que queda lejos xd"
       },
       {
-        archivo:"calor.jpeg",
-        texto:"dios, creo que fue la vez que mas calor sufrí, pero fuera de eso, fue un viaje donde pasamos tiempo juntos, aunque se pudo mejorar bastante"
+        archivo: "calor.jpeg",
+        texto: "dios, creo que fue la vez que mas calor sufrí, pero fuera de eso, fue un viaje donde pasamos tiempo juntos, aunque se pudo mejorar bastante"
       },
       {
-        archivo:"primera.jpg",
-        texto:"nuestra primera vez, que hermoso recuerdo, estaba muy nervioso, pero tu me hiciste tranquilizar y eso me ayudó bastante, amo demasiado ese momento"
+        archivo: "primera.jpg",
+        texto: "nuestra primera vez, que hermoso recuerdo, estaba muy nervioso, pero tu me hiciste tranquilizar y eso me ayudó bastante, amo demasiado ese momento"
       },
       {
-        archivo:"nosotros.jpg",
-        texto:"un lindo recuerdo, no me quería alejar de ti, como siempre, esos momentos eran muy tristes, pero eran una gran muestra de amor"
+        archivo: "nosotros.jpg",
+        texto: "un lindo recuerdo, no me quería alejar de ti, como siempre, esos momentos eran muy tristes, pero eran una gran muestra de amor"
       },
       {
-        archivo:"piscina.jpg",
-        texto:"un hermoso recuerdo, es de mis fotos favoritas, un lindo dia en la piscina"
+        archivo: "piscina.jpg",
+        texto: "un hermoso recuerdo, es de mis fotos favoritas, un lindo dia en la piscina"
       },
       {
-        archivo:"paseo.jpeg",
-        texto:"una foto picarona en medio de mi familia, casi nos cachan jaja"
+        archivo: "paseo.jpeg",
+        texto: "una foto picarona en medio de mi familia, casi nos cachan jaja"
       },
       {
-        archivo:"navidad.jpeg",
-        texto:"una foto de nuestra navidad juntos, antes de tirar cohetes jeje"
+        archivo: "navidad.jpeg",
+        texto: "una foto de nuestra navidad juntos, antes de tirar cohetes jeje"
       },
       {
-        archivo:"amor.jpeg",
-        texto:"yo siempre picaro, esa mano está en posicion de adelanto, pero un lindo recuerdo tambien"
+        archivo: "amor.jpeg",
+        texto: "yo siempre picaro, esa mano está en posicion de adelanto, pero un lindo recuerdo tambien"
       },
       {
-        archivo:"amor2.jpeg",
-        texto:"no me devolvias el beso, te haces la dificil"
+        archivo: "amor2.jpeg",
+        texto: "no me devolvias el beso, te haces la dificil"
       },
       {
-        archivo:"dormida.jpeg",
-        texto:"si mal no recuedo volviamos de donde fiorella, tuvimos mucha intimidad en esa casa jaja, la profanaste"
+        archivo: "dormida.jpeg",
+        texto: "si mal no recuedo volviamos de donde fiorella, tuvimos mucha intimidad en esa casa jaja, la profanaste"
       },
       {
-        archivo:"ebrio.jpeg",
-        texto:"no me acuerdo mucho de ese viaje, tenía resaca, había bebido bastante, pero le cumplí la palabra a sara"
+        archivo: "ebrio.jpeg",
+        texto: "no me acuerdo mucho de ese viaje, tenía resaca, había bebido bastante, pero le cumplí la palabra a sara"
       },
       {
-        archivo:"gatos.jpeg",
-        texto:"me encanta esta foto, si mal no recuerdo, me iba a chambear y tu toda dormida un sabado"
+        archivo: "gatos.jpeg",
+        texto: "me encanta esta foto, si mal no recuerdo, me iba a chambear y tu toda dormida un sabado"
       },
       {
-        archivo:"rosa.jpeg",
-        texto:"la primera foto que te saqué en mi casa"
+        archivo: "rosa.jpeg",
+        texto: "la primera foto que te saqué en mi casa"
       },
       {
-        archivo:"cena.jpeg",
-        texto:"nuestra cena, hermoso recuerdo, tuvimos que hacer 2 delivery por que no nos quedaban con... y tuvimos que comprar jaja"
+        archivo: "cena.jpeg",
+        texto: "nuestra cena, hermoso recuerdo, tuvimos que hacer 2 delivery por que no nos quedaban con... y tuvimos que comprar jaja"
       },
       {
-        archivo:"jhon.jpeg",
-        texto:"fuimos a verlos a tu casita durante la chamba, me diste fuerza con tus besitos sanadores"
+        archivo: "jhon.jpeg",
+        texto: "fuimos a verlos a tu casita durante la chamba, me diste fuerza con tus besitos sanadores"
       },
     ];
 
+    let indiceActual = 0;
     let recuerdoActivo = null;
 
+    function actualizarContador() {
+      const tag = document.getElementById('contadorRecuerdos');
+      if (!recuerdosChurra.length) {
+        tag.textContent = '🦝 0 recuerdos';
+        return;
+      }
+      const posicion = Math.min(indiceActual + 1, recuerdosChurra.length);
+      tag.textContent = `🦝 ${posicion} / ${recuerdosChurra.length}`;
+    }
+
     function cargarRecuerdos() {
-      const lista = document.getElementById('memoriesList');
-      lista.innerHTML = '';
+      const deck = document.getElementById('swipeDeck');
+      const controls = document.getElementById('swipeControls');
+      deck.innerHTML = '';
+      actualizarContador();
 
       if (!recuerdosChurra.length) {
-        lista.innerHTML = '<p class="empty-msg">Agrega tus fotos y textos en recuerdosChurra dentro de teacuerdas.html.</p>';
+        controls.style.display = 'none';
+        deck.innerHTML = '<p class="empty-msg">Agrega tus fotos y textos en recuerdosChurra dentro del HTML.</p>';
         return;
       }
 
-      recuerdosChurra.forEach((item) => {
+      if (indiceActual >= recuerdosChurra.length) {
+        controls.style.display = 'none';
+        deck.innerHTML = `
+          <div class="swipe-card" style="position:relative; padding:26px; text-align:center; cursor:default;">
+            <p style="margin-bottom:14px;">Llegaste al final de todos los recuerdos.</p>
+            <button class="fav-btn" type="button" onclick="reiniciarMazo()">Volver a verlos</button>
+          </div>
+        `;
+        return;
+      }
+
+      controls.style.display = 'flex';
+      const visibles = recuerdosChurra.slice(indiceActual, indiceActual + 2).reverse();
+
+      visibles.forEach((item, idxReverso) => {
+        const esFrente = idxReverso === visibles.length - 1;
         const ruta = `churra/${item.archivo}`;
         const card = document.createElement('article');
-        card.className = 'memory-card';
+        card.className = 'swipe-card';
+        card.style.zIndex = esFrente ? 2 : 1;
+        card.style.transform = esFrente ? 'scale(1)' : 'scale(0.96) translateY(10px)';
+
+        const likeBadge = document.createElement('span');
+        likeBadge.className = 'swipe-badge like';
+        likeBadge.textContent = '❤️ Me encanta';
+
+        const passBadge = document.createElement('span');
+        passBadge.className = 'swipe-badge pass';
+        passBadge.textContent = 'Siguiente →';
 
         const photoBox = document.createElement('div');
         photoBox.className = 'photo-box';
-        photoBox.onclick = () => abrirLightbox(ruta, item.archivo, item.texto);
 
         const img = document.createElement('img');
         img.src = ruta;
-        img.alt = item.texto || "Recuerdo";
-        img.loading = "lazy";
-        img.onerror = () => card.remove();
+        img.alt = item.texto || 'Recuerdo';
+        img.loading = 'lazy';
+        img.draggable = false;
+        img.onerror = () => {
+          const idxReal = indiceActual + (esFrente ? 1 : 0);
+          recuerdosChurra.splice(idxReal, 1);
+          cargarRecuerdos();
+        };
 
         photoBox.appendChild(img);
 
@@ -400,10 +511,128 @@
         caption.className = 'memory-caption';
         caption.textContent = item.texto;
 
+        card.appendChild(likeBadge);
+        card.appendChild(passBadge);
         card.appendChild(photoBox);
         card.appendChild(caption);
-        lista.appendChild(card);
+
+        if (esFrente) {
+          activarArrastre(card, item, ruta, likeBadge, passBadge);
+        }
+
+        deck.appendChild(card);
       });
+    }
+
+    function activarArrastre(card, item, ruta, likeBadge, passBadge) {
+      let inicioX = 0;
+      let inicioY = 0;
+      let actualX = 0;
+      let arrastrando = false;
+      let movido = false;
+      const umbral = 95;
+
+      card.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        arrastrando = true;
+        movido = false;
+        inicioX = e.clientX;
+        inicioY = e.clientY;
+        card.classList.add('dragging');
+        card.setPointerCapture(e.pointerId);
+      });
+
+      card.addEventListener('pointermove', (e) => {
+        if (!arrastrando) return;
+        const dx = e.clientX - inicioX;
+        const dy = e.clientY - inicioY;
+
+        if (Math.hypot(dx, dy) > 8) {
+          movido = true;
+        }
+
+        actualX = dx;
+        const rotacion = actualX * 0.06;
+        card.style.transform = `translateX(${actualX}px) rotate(${rotacion}deg)`;
+
+        const progreso = Math.min(Math.abs(actualX) / umbral, 1);
+        if (actualX > 15) {
+          likeBadge.style.opacity = progreso;
+          passBadge.style.opacity = 0;
+        } else if (actualX < -15) {
+          passBadge.style.opacity = progreso;
+          likeBadge.style.opacity = 0;
+        } else {
+          likeBadge.style.opacity = 0;
+          passBadge.style.opacity = 0;
+        }
+      });
+
+      card.addEventListener('pointerup', async (e) => {
+        if (!arrastrando) return;
+        arrastrando = false;
+        card.classList.remove('dragging');
+        if (card.hasPointerCapture(e.pointerId)) {
+          card.releasePointerCapture(e.pointerId);
+        }
+
+        if (!movido) {
+          likeBadge.style.opacity = 0;
+          passBadge.style.opacity = 0;
+          card.style.transform = 'scale(1)';
+          abrirLightbox(ruta, item.archivo, item.texto);
+          return;
+        }
+
+        if (actualX >= umbral) {
+          await completarSwipe(card, 1, item);
+        } else if (actualX <= -umbral) {
+          await completarSwipe(card, -1, item);
+        } else {
+          actualX = 0;
+          likeBadge.style.opacity = 0;
+          passBadge.style.opacity = 0;
+          card.style.transform = 'scale(1)';
+        }
+      });
+    }
+
+    async function completarSwipe(card, direccion, item) {
+      const destinoX = direccion * 420;
+      const rotacionFinal = direccion * 18;
+      card.style.transform = `translateX(${destinoX}px) rotate(${rotacionFinal}deg)`;
+      card.style.opacity = '0';
+
+      if (direccion === 1) {
+        try {
+          await enviarNotificacionNtfy({
+            titulo: 'Recuerdo favorito',
+            mensaje: `Le dio ❤️ deslizando en ¿Te acuerdas? (${item.archivo}) 📸`,
+            tags: 'camera,heart'
+          });
+        } catch (error) {
+          console.error('Error al enviar ntfy:', error);
+        }
+      }
+
+      setTimeout(() => {
+        indiceActual += 1;
+        cargarRecuerdos();
+      }, 220);
+    }
+
+    function dispararSwipe(direccion) {
+      const deck = document.getElementById('swipeDeck');
+      const tarjetaFrente = deck.lastElementChild;
+      if (!tarjetaFrente || !tarjetaFrente.classList.contains('swipe-card')) return;
+      const item = recuerdosChurra[indiceActual];
+      if (!item) return;
+      completarSwipe(tarjetaFrente, direccion, item);
+    }
+
+    function reiniciarMazo() {
+      indiceActual = 0;
+      cargarRecuerdos();
     }
 
     function abrirLightbox(ruta, archivo, texto) {
@@ -440,6 +669,10 @@
         btn.textContent = '🤍 Me encanta este recuerdo';
       }
     }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') cerrarLightbox();
+    });
 
     cargarRecuerdos();
   </script>
